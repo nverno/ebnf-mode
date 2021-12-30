@@ -7,7 +7,7 @@
 
 ### Description
 
- Basic support for EBNF language files.
+ Basic indentation and font-locking support for EBNF language files.
  http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form
 
  Refer to ebnf2ps.el for language description/variables to customize
@@ -23,7 +23,9 @@
 
 ### Installation
 
+Add containing directory to load-path and generate autoloads, or
 ```lisp
+(require 'ebnf-mode)
 ```
 
 Code:
