@@ -4,7 +4,8 @@
 
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/ebnf-mode
-;; Package-Requires: 
+;; Version: 1.0.0
+;; Package-Requires: ((emacs "25.1"))
 ;; Created: 29 December 2021
 
 ;; This file is not part of GNU Emacs.
@@ -25,10 +26,6 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-
-;; [![Build Status](https://travis-ci.org/nverno/ebnf-mode.svg?branch=master)](https://travis-ci.org/nverno/ebnf-mode)
-;;
-;;; Description:
 ;;
 ;;  Basic indentation and font-locking support for EBNF language files.
 ;;  http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form
@@ -39,47 +36,35 @@
 ;;  This mode uses '.' as rule ender and ';' as comment starter.
 ;;  (TODO: support different rule endings [.|;] and comment starters?)
 ;;
-;;  Notes:
-;;    - conversion to png:
-;;      1. Use ebnf2ps.el to convert to .eps (ebnf-eps-buffer)
-;;      2. convert <output>.eps <output>.png (convert from imagemagick)
-;;
-;;; Installation:
-;;
-;; Add containing directory to load-path and generate autoloads, or
-;; ```lisp
-;; (require 'ebnf-mode)
-;; ```
-;;
 ;;; Code:
 (eval-when-compile
   (require 'cl-lib)
   (require 'subr-x))
 
-(defgroup ebnf-mode nil
+(defgroup ebnf nil
   "Major mode for EBNF files."
   :group 'languages
-  :group 'ebnf-mode)
+  :group 'ebnf)
 
 (defcustom ebnf-mode-indent-by-production t
   "If non-nil, indent each production continuation with its initial '='."
   :type 'boolean
-  :group 'ebnf-mode)
+  :group 'ebnf)
 
 (defcustom ebnf-mode-indent-offset 8
   "Default number of spaces to indent production continuations."
   :type 'integer
-  :group 'ebnf-mode)
+  :group 'ebnf)
 
 (defcustom ebnf-mode-comment-char ?\;
   "Line comment character."
   :type 'character
-  :group 'ebnf-mode)
+  :group 'ebnf)
 
 (defcustom ebnf-mode-eop-char ?.
   "End of production character."
   :type 'character
-  :group 'ebnf-mode)
+  :group 'ebnf)
 
 (defvar ebnf-mode-production-re "^\\s-*\\([[:alnum:]_]+\\)\\s-*=")
 
@@ -94,6 +79,7 @@
     syn))
 
 (defun ebnf-mode--end-of-line ()
+  "Move point to end of line."
   (end-of-line)
   (let ((syntax (syntax-ppss)))
     (and (nth 8 syntax)
@@ -101,6 +87,7 @@
     (skip-syntax-backward " " (line-beginning-position))))
 
 (defun ebnf-mode--production-line-p ()
+  "Non-nil if line is a production."
   (save-excursion
     (beginning-of-line)
     (looking-at-p ebnf-mode-production-re)))
@@ -121,6 +108,7 @@
   (point))
 
 (defun ebnf-mode--production-bounds ()
+  "Bounds of current production."
   (save-excursion
     (let* ((cur (point))
            (beg (progn
@@ -135,6 +123,7 @@
 (put 'ebnf-production 'bounds-of-thing-at-point 'ebnf-mode--production-bounds)
 
 (defun ebnf-mode--production-indent (beg)
+  "Indent level for production at BEG."
   (if ebnf-mode-indent-by-production
       (save-excursion
         (goto-char beg)
@@ -157,8 +146,9 @@ Indent production continuation lines to `ebnf-mode-indent-offset'."
 
 ;;;###autoload
 (define-derived-mode ebnf-mode prog-mode "EBNF"
-  "Major mode for editing EBNF files.\n
-\\{ebnf-mode-map"
+  "Major mode for editing EBNF files.
+
+\\{ebnf-mode-map}"
   (setf font-lock-defaults '(ebnf-mode-font-lock-keywords nil nil nil nil))
   (setq-local comment-start ";")
   (setq-local comment-end "")
