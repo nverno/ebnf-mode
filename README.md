@@ -3,8 +3,6 @@
 *Author:* Noah Peart <noah.v.peart@gmail.com><br>
 *URL:* [https://github.com/nverno/ebnf-mode](https://github.com/nverno/ebnf-mode)<br>
 
-[![Build Status](https://travis-ci.org/nverno/ebnf-mode.svg?branch=master)](https://travis-ci.org/nverno/ebnf-mode)
-
 ### Description
 
  Basic indentation and font-locking support for EBNF language files.

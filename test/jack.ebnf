@@ -1,0 +1,73 @@
+;; Jack Language EBNF
+;; C-style comments
+;[jack
+
+keyword = "class"|"constructor"|"function"|"method"|"field"|"static"
+        | "var"|"int"|"char"|"boolean"|"void"|"true"|"false"|"null"
+        | "this"|"let"|"do"|"if"|"else"|"while"|"return"
+        .
+symbol  = "{" | "}" | "(" | ")" | "[" | "]" | "." | "," | ";" | "+" | "-"
+        | "*" | "/" | "&" | "|" | "<" | ">" | "=" | "~"
+        .
+op       = "+" | "-" | "*" | "/" | "&" | "|" | "<" | ">" | "=".
+unary_op = "-" | "~".
+constant = "true" | "false" | "null" | "this".
+
+whitespace     = "[ \f\v\n\t]*".           ;; whitespace ignored
+ident          = "[A-Za-z_][A-Za-z0-9_]*". ;; can't start with digit
+integer        = "[0-9]+".                 ;; in range 0...32767
+string         = "\"[^\n\"]*\"".           ;; unicode characters, no newline
+primitive      = "int"|"boolean"|"char".
+
+classname      = "[A-Z][A-Za-z0-9_]*".     ;; starts with capital letter
+type           = primitive | classname.
+funcname       = ident.
+varname        = ident.
+
+;; Program structure
+program       = class.
+class         = "class" classname "{" {classvar_decl}* {func_decl}* "}".
+classvar_decl = ("static" | "field") type varname {"," varname}* ";".
+
+func_decl     = ("constructor"|"function"|"method") ("void"|type) funcname
+              "(" [ parameter_list ] ")" func_body
+              .
+func_body     = "{" {var_decl}* statements "}".
+
+parameter_list = type varname { "," type varname }*.
+
+;; Statements
+statement = let_statement
+          | if_statement
+          | while_statement
+          | do_statement
+          | return_statement
+          .
+
+let_statement    = "let" varname [ "[" expression "]" ] "=" expression ";".
+if_statement     = "if" "(" expression ")" "{" {statement}* "}"
+                 [ "else" "{" {statement}* "}" ]
+                 .
+while_statement  = "while" "(" expression ")" "{" {statement}* "}".
+do_statement     = "do" func_call ";".
+return_statement = "return" [ expression ] ";".
+
+;; Expressions
+
+expression = term {op term}*.
+expression_list = expression { "," expression }*
+term = integer
+     | string
+     | constant
+     | varname
+     | varname "[" expression "]"
+     | func_call
+     | "(" expression ")"
+     | unary_op term
+     .
+
+func_call = funcname "(" [ expression_list ] ")"
+          | ( classname | varname ) "." funcname "(" [ expression_list ] ")"
+          .
+
+;]jack
