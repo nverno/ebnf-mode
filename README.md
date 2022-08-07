@@ -12,12 +12,6 @@
  syntax.
 
  This mode uses '.' as rule ender and ';' as comment starter.
- (TODO: support different rule endings [.|;] and comment starters?)
-
- Notes:
-   - conversion to png:
-     1. Use ebnf2ps.el to convert to .eps (ebnf-eps-buffer)
-     2. convert <output>.eps <output>.png (convert from imagemagick)
 
 ### Installation
 
