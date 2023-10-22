@@ -1,7 +1,5 @@
 ;;; ebnf-mode.el --- Major mode for EBNF files -*- lexical-binding: t; -*-
 
-;; This is free and unencumbered software released into the public domain.
-
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/ebnf-mode
 ;; Version: 1.0.0
